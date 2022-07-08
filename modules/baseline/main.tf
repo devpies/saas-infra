@@ -4,8 +4,29 @@ terraform {
 
 # Create tenants Table
 resource "aws_dynamodb_table" "tenants" {
-  name = "tenants"
+  name = "${var.stage}-tenants"
   hash_key = "tenantId"
+
+  attribute {
+    name = "tenantId"
+    type = "S"
+  }
+
+  billing_mode = "PROVISIONED"
+  read_capacity = 5
+  write_capacity = 5
+}
+
+# Create tenants Table
+resource "aws_dynamodb_table" "tenants_connections" {
+  name = "${var.stage}-connections"
+  hash_key = "userId"
+  range_key = "tenantId"
+
+  attribute {
+    name = "userId"
+    type = "S"
+  }
 
   attribute {
     name = "tenantId"
@@ -19,7 +40,7 @@ resource "aws_dynamodb_table" "tenants" {
 
 # Create auth-info table
 resource "aws_dynamodb_table" "auth_info" {
-  name = "auth-info"
+  name = "${var.stage}-auth-info"
   hash_key = "tenantPath"
 
   attribute {
@@ -34,7 +55,7 @@ resource "aws_dynamodb_table" "auth_info" {
 
 # Create silo-config table
 resource "aws_dynamodb_table" "silo_config" {
-  name = "silo-config"
+  name = "${var.stage}-silo-config"
   hash_key = "tenantName"
 
   attribute {
